@@ -326,17 +326,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // addText($pdf, '');
 
     $pdf->SetFont('THSarabunNew', '', 10);
-    $pdf->Text(61,$pdf->GetY()+2,iconv('UTF-8', 'TIS-620//IGNORE', $bank));
-    $pdf->Text(108,$pdf->GetY()+2,iconv('UTF-8', 'TIS-620//IGNORE', $branch));
+    if ($payment_check) {
+       
+        $pdf->Text(61,$pdf->GetY()+2,iconv('UTF-8', 'TIS-620//IGNORE', $bank));
+        $pdf->Text(108,$pdf->GetY()+2,iconv('UTF-8', 'TIS-620//IGNORE', $branch));
+    }
 
     $pdf->SetFont('THSarabunNew', '', 12);
     $pdf->Cell(50, $checkboxSize, iconv('UTF-8', 'TIS-620//IGNORE', 'ธนาคาร..........................................................'), 0, 0, 'L');
     $pdf->Cell(30, $checkboxSize, iconv('UTF-8', 'TIS-620//IGNORE', 'สาขา............................................................'), 0, 1, 'L');
     
     $pdf->SetX(48);
+
     $pdf->SetFont('THSarabunNew', '', 10);
-    $pdf->Text(62,$pdf->GetY()+3.4,iconv('UTF-8', 'TIS-620//IGNORE', $check_number));
-    $pdf->Text(110,$pdf->GetY()+3.4,iconv('UTF-8', 'TIS-620//IGNORE', $check_date));
+    if ($payment_check) {
+        $pdf->Text(62,$pdf->GetY()+3.4,iconv('UTF-8', 'TIS-620//IGNORE', $check_number));
+        $pdf->Text(110,$pdf->GetY()+3.4,iconv('UTF-8', 'TIS-620//IGNORE', $check_date));
+    }
+        
 
     $pdf->SetFont('THSarabunNew', '', 12);
     $pdf->Cell(50, 6, iconv('UTF-8', 'TIS-620//IGNORE', 'เช็คเลขที่.........................................................'), 0, 0, 'L');
