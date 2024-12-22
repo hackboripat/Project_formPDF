@@ -197,17 +197,6 @@
 
     <script>
 
-        function clear_data() {
-            const form = document.getElementById("product-form");
-            form.reset();
-            document.querySelectorAll('input[type="number"]').forEach(input => {
-                input.value = "";
-            });
-            document.querySelectorAll('input[type="text"]').forEach(input => {
-                input.value = "";
-            });
-        }
-
         var today = new Date();
         document.getElementById("date").value = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
         document.getElementById("check_date").value = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
@@ -220,22 +209,60 @@
                 const vatRate = 7;
 
             function calculateRowTotal(row) {
-                const amount = parseFloat(document.querySelector(`input[name="product_amount${row}"]`).value) || 0;
-                const price = parseFloat(document.querySelector(`input[name="product_price${row}"]`).value) || 0;
-                const total = amount * price;
-                document.querySelector(`input[name="product_total${row}"]`).value = total.toFixed(2);
-                return total;
+                // const amount = parseFloat(document.querySelector(`input[name="product_amount${row}"]`).value) || 0;
+                // const price = parseFloat(document.querySelector(`input[name="product_price${row}"]`).value) || 0;
+                // const total = amount * price;
+                // document.querySelector(`input[name="product_total${row}"]`).value = total.toFixed(2);
+
+                // return total;
+
+                const amount = parseFloat(document.querySelector(`input[name="product_amount${row}"]`).value || 0);
+                const price = parseFloat(document.querySelector(`input[name="product_price${row}"]`).value || 0);
+
+                let total = 0;
+
+                if((price == 0 && amount == 0)){
+
+                    document.querySelector(`input[name="product_total${row}"]`).value = "";
+                    return 0;
+
+                }else if(amount == 0){
+
+                    // document.querySelector(`input[name="product_total${row}"]`).value = price.toFixed(2);
+                    document.querySelector(`input[name="product_total${row}"]`).value = price;
+                    return price;
+
+                }else if(price == 0){
+                    document.querySelector(`input[name="product_total${row}"]`).value = "";
+                    return 0;
+                }else{
+
+                    total = amount * price;
+                    document.querySelector(`input[name="product_total${row}"]`).value = total.toFixed(2);
+
+                    return total;
+                }
+
+
             }
 
             function calculateAllTotals() {
                 let subtotal = 0;
 
                 for (let i = 1; i <= rows; i++) {
+
                     subtotal += calculateRowTotal(i);
+                    // if(calculateRowTotal(i) != null){
+                        
+                    // }else{
+                    //     subtotal += 0;
+                    // }
                 }
 
+                console.log("subtotal >.>",subtotal)
+
                 // const discount = parseFloat(document.querySelector('input[name="discount"]').value) || 0;
-                const discount = 0;
+                // const discount = 0;
                 // const afterDiscount = subtotal - discount;
 
                 const vat = subtotal * (vatRate / 100);

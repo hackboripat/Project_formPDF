@@ -106,13 +106,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $products = [];
 
     for ($i = 1; $i <= 10; $i++) {
+
+        $product_price = null;
+        $product_total = null;
+
+        if (isset($_POST['product_price' . $i]) &&  $_POST['product_price' . $i] != ''){
+            $product_price = number_format((float) $_POST['product_price' . $i], 2);
+        }else{
+            $product_price = null;
+        }
+
+        if (isset($_POST['product_total' . $i]) &&  $_POST['product_total' . $i] != ''){
+            $product_total = number_format((float) $_POST['product_total' . $i], 2);
+        }else{
+            $product_total = null;
+        }
+
         $product = [
             'product_number' => $i,
             'product_name' => $_POST['product_name' . $i] ?? null,
             'product_unit' => $_POST['product_unit' . $i] ?? null,
             'product_amount' => $_POST['product_amount' . $i] ?? null,
-            'product_price' => number_format((float) $_POST['product_price' . $i], 2) ?? null,
-            'product_total' => number_format((float) $_POST['product_total' . $i], 2) ?? null,
+            'product_price' => $product_price,
+            'product_total' => $product_total,
         ];
         $products[] = $product;
     }
@@ -123,6 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $grand_total = $_POST['grand_total'];
 
 
+    //{========================================================================start PDF
     // PDF Create
     require('fpdf.php');
     define('FPDF_FONTPATH', 'font/');
@@ -354,18 +371,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         mkdir('purchase_order', 0755, true);
     }
 
+    //}stop PDF
+
     require('config.php');
 
     try {
         $bank = $_POST['bank'] ?? ' (ไม่ได้ระบุ)';
         if ($_POST['payment_cash'] === 'true' && $_POST['check'] === 'true') {
-            $payment = 'การชำระเงินผ่านเงินสด '. 'และเช็คธนาคาร' . $bank ;
+
+            $payment = 'การชำระเงินผ่านเงินสด';
+
         } else if ($_POST['payment_cash'] === 'true') {
+
             $payment = 'การชำระเงินผ่านเงินสด ';
+
         } else if ($_POST['check'] === 'true') {
+
             $payment = 'เช็คธนาคาร' . $bank;
+
         } else {
+
             $payment = '-';
+
         }
 
         $conn->beginTransaction(); // Start a transaction
@@ -385,12 +412,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             vat, 
             grand_total, 
             payment,
-            payment_cash,
             bank,
             branch,
             check_number,
-            check_date
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+            check_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)') ;
         
         $stmt->execute([
             $date, 
@@ -406,7 +431,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $vat, 
             $grand_total, 
             $payment, 
-            $payment_cash,
             $bank,
             $branch,
             $check_number,
@@ -419,9 +443,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Insert into the order_detail table
         $productDetails = [];
 
-        for ($i = 1; $i <= 4; $i++) {
+        for ($i = 1; $i <= 10; $i++) {
 
-            $product_number = isset($_POST['product_number' . $i]) ? (int) $_POST['product_number' . $i] : null;
+            $product_number = $i;
             $product_name = $_POST['product_name' . $i] ?? null;
             $product_unit = $_POST['product_unit' . $i] ?? null;
             $product_price = isset($_POST['product_price' . $i]) ? (float) $_POST['product_price' . $i] : null;
@@ -438,9 +462,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
 
-        $stmtDetail = $conn->prepare('INSERT INTO order_detail (product_name, product_price, product_amount) VALUES (?, ?, ?, ?)');
+        $stmtDetail = $conn->prepare('INSERT INTO order_detail (product_number, product_name, product_unit, product_price, product_amount) VALUES (?, ?, ?, ?,?)');
         foreach ($productDetails as $product) {
-            $stmtDetail->execute([ $product['number'],$product['name'],$product['unit'], $product['price'], $product['amount']]);
+            $stmtDetail->execute([ 
+                $product['number'],
+                $product['name'],
+                $product['unit'], 
+                $product['price'], 
+                $product['amount']
+            ]);
         }
 
         $conn->commit(); // Commit the transaction
