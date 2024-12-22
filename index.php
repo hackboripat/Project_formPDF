@@ -45,14 +45,13 @@
                     </div>
 
                     <!-- form2 -->
-                    <div class="form2">
+                    <!-- <div class="form2">
                         <div>
                             <p for="fname">หมายเหตุ</p>
-                            <!-- <input type="ta" id="fname" name="fname"> -->
                             <textarea  id="note"  name="note" ></textarea>
                         </div>
 
-                    </div>
+                    </div> -->
 
                 </div>
 

@@ -48,6 +48,11 @@ body {
 /* .col{ */
   /* background-color: burlywood; */
 /* } */
+
+.row{
+  height: 288px;  
+}
+
 .form1{
   width: 380px;
   height: 144px;

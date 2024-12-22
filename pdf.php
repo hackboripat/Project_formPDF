@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $quotation_number = $_POST['quotation_number'];
     $make_payment = $_POST['make_payment'];
     
-    $note = $_POST['note'];
+    // $note = $_POST['note'];
 
     $payment_cash = $_POST['payment_cash'];
     // $check = $_POST['check'];
@@ -174,10 +174,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             $pdf->Cell(13, 4, iconv('UTF-8', 'TIS-620//IGNORE', $product['product_number']), 'LR', 0, 'C');
             $pdf->Cell(110, 4, iconv('UTF-8', 'TIS-620//IGNORE', $product['product_name']), 'LR', 0, 'L');
-            $pdf->Cell(20, 4, iconv('UTF-8', 'TIS-620//IGNORE', $product['product_unit']), 'LR', 0, 'L');
-            $pdf->Cell(20, 4, iconv('UTF-8', 'TIS-620//IGNORE', $product['product_amount']), 'LR', 0, 'R');
-            $pdf->Cell(22, 4, iconv('UTF-8', 'TIS-620//IGNORE', $product['product_price']), 'LR', 0, 'R');
-            $pdf->Cell(33, 4, iconv('UTF-8', 'TIS-620//IGNORE', $product['product_total']), 'LR', 1, 'R');
+            $pdf->Cell(20, 4, iconv('UTF-8', 'TIS-620//IGNORE', $product['product_unit']), 'LR', 0, 'C');
+            $pdf->Cell(20, 4, iconv('UTF-8', 'TIS-620//IGNORE', $product['product_amount']), 'LR', 0, 'C');
+            $pdf->Cell(22, 4, iconv('UTF-8', 'TIS-620//IGNORE', $product['product_price']), 'LR', 0, 'C');
+            $pdf->Cell(33, 4, iconv('UTF-8', 'TIS-620//IGNORE', $product['product_total']), 'LR', 1, 'C');
         }
         $pdf->Cell(13, 4, iconv('UTF-8', 'TIS-620//IGNORE', ''), 'LBR');
         $pdf->Cell(110, 4, iconv('UTF-8', 'TIS-620//IGNORE', ''), 'LBR', 0, 'R');
@@ -189,7 +189,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     
 
-    function createTablePrice($pdf, $subtotal, $vat, $grand_total, $note)
+    function createTablePrice($pdf, $subtotal, $vat, $grand_total)
     {
         $pdf->SetFont('THSarabunNew', '', 10);
 
@@ -199,15 +199,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $pdf->SetFont('THSarabunNew', '', 12);
 
         $pdf->Cell(42, 4, iconv('UTF-8', 'TIS-620//IGNORE', 'รวมเงิน'), 'LR', 0, 'L');
-        $pdf->Cell(33, 4, iconv('UTF-8', 'TIS-620//IGNORE', number_format($subtotal, 2)), 'LR', 1, 'R');
+        $pdf->Cell(33, 4, iconv('UTF-8', 'TIS-620//IGNORE', number_format($subtotal, 2)), 'LR', 1, 'C');
 
-        $pdf->Cell(143, 4, iconv('UTF-8', 'TIS-620//IGNORE', 'หมายเหตุ : ' . $note), 0, 0, 'L');
+        $pdf->Cell(143, 6, iconv('UTF-8', 'TIS-620//IGNORE', 'หมายเหตุ : 1.กรุณาแจ้งภายใน 7 วัน หากสินค้าหรือเอกสารผิดพลาด'), 0, 0, 'L');
         $pdf->Cell(42, 4, iconv('UTF-8', 'TIS-620//IGNORE', 'ภาษีมูลค่าเพิ่ม'), 'LR', 0, 'L');
-        $pdf->Cell(33, 4, iconv('UTF-8', 'TIS-620//IGNORE', number_format($vat, 2)), 'LR', 1, 'R');
+        $pdf->Cell(33, 4, iconv('UTF-8', 'TIS-620//IGNORE', number_format($vat, 2)), 'LR', 1, 'C');
 
-        $pdf->Cell(143, 4, iconv('UTF-8', 'TIS-620//IGNORE', $note), 0, 0, 'L');
+        $pdf->SetX(18);
+        $pdf->Cell(123, 6, iconv('UTF-8', 'TIS-620//IGNORE', '2.สั่งจ่ายเช็คในนาม บริษัท ฟิตติ้ง เคเบิ้ล (ประเทศไทย) จำกัด เท่านั้น หรือโอนชำระเป็นเงินสด'), 0, 0, 'L');
+        // $pdf->SetFont('THSarabunNew', 'B', 12);
+        // $pdf->Cell(20, 6, iconv('UTF-8', 'TIS-620//IGNORE', 'หรือโอนชำระเป็นเงินสด'), 0, 0, 'L');
+
+        $pdf->SetX(148);
         $pdf->Cell(42, 4, iconv('UTF-8', 'TIS-620//IGNORE', 'จำนวนเงินทั้งสิ้น'), 'LBR', 0, 'L');
-        $pdf->Cell(33, 4, iconv('UTF-8', 'TIS-620//IGNORE', number_format($grand_total, 2)), 'LBR', 1, 'R');
+        $pdf->Cell(33, 4, iconv('UTF-8', 'TIS-620//IGNORE', number_format($grand_total, 2)), 'LBR', 1, 'C');
     }
 
     $pageWidth = $pdf->GetPageWidth();
@@ -253,7 +258,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     createTableTitle($pdf,$customer_name,$date,$order_number,$taxpayer_identification_number,$quotation_number,$telephone_number,$make_payment);
     createTableProduct($pdf, $products);
-    createTablePrice($pdf, $subtotal, $vat, $grand_total, $note);
+    createTablePrice($pdf, $subtotal, $vat, $grand_total);
 
     // payment
     if (isset($_POST['payment_cash']) && $_POST['payment_cash'] === 'true') {
@@ -322,7 +327,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
 
-    $pdf->Cell(55, 3, iconv('UTF-8', 'TIS-620//IGNORE', ''), '', 1, 'C');
+    $pdf->Cell(55, 2, iconv('UTF-8', 'TIS-620//IGNORE', ''), '', 1, 'C');
 
     //ลายเช็น
     $pdf->SetFont('THSarabunNew', '', 14);
@@ -379,7 +384,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             subtotal, 
             vat, 
             grand_total, 
-            note, 
             payment,
             payment_cash,
             bank,
@@ -401,7 +405,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $subtotal, 
             $vat, 
             $grand_total, 
-            $note, 
             $payment, 
             $payment_cash,
             $bank,
