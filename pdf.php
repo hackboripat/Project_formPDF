@@ -76,6 +76,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $customer_name = $_POST['customer_name'];
     $taxpayer_identification_number = $_POST['taxpayer_identification_number'];
     $telephone_number = $_POST['telephone_number'];
+    $address = $_POST['address'];
+
 
     
     $volume = $_POST['volume'];
@@ -87,8 +89,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     // $note = $_POST['note'];
 
-    $payment_cash = $_POST['payment_cash'];
-    // $check = $_POST['check'];
+    $payment_cash = $_POST['payment_cash'] ?? "false";
+    $payment_check = $_POST['payment_check'] ?? "false";
     $bank = $_POST['bank'];
     $branch = $_POST['branch'];
     $check_number = $_POST['check_number'];
@@ -164,10 +166,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $pdf->Cell(0, 8, $text, 0, 1, $align);
     }
 
-    function createTableTitle($pdf,$customer_name,$date,$order_number,$taxpayer_identification_number,$quotation_number,$telephone_number,$make_payment) {
+    function createTableTitle($pdf,$customer_name,$date,$address,$order_number,$taxpayer_identification_number,$quotation_number,$telephone_number,$make_payment) {
         $pdf->Cell(143, 4, iconv('UTF-8', 'TIS-620//IGNORE', 'ชื่อลูกค้า ' . $customer_name),'LTR', 0, 'L');
         $pdf->Cell(75, 4, iconv('UTF-8', 'TIS-620//IGNORE', 'วันที่ ' . $date),'TR', 1, 'L');
-        $pdf->Cell(143, 4, iconv('UTF-8', 'TIS-620//IGNORE', ''), 'LR', 0, 'L');
+        $pdf->Cell(143, 4, iconv('UTF-8', 'TIS-620//IGNORE', 'ที่อยู่ ' . $address), 'LR', 0, 'L');
         $pdf->Cell(75, 4, iconv('UTF-8', 'TIS-620//IGNORE', 'เลขที่ใบสั่งซื้อ ' . $order_number),'LR', 1, 'L');
         $pdf->Cell(143, 4, iconv('UTF-8', 'TIS-620//IGNORE', 'เลขที่ประจำตัวผู้เสียภาษี ' . $taxpayer_identification_number ), 'LR', 0, 'L');
         $pdf->Cell(75, 4, iconv('UTF-8', 'TIS-620//IGNORE', 'เลขที่ใบเสนอราคา ' . $quotation_number),'LR', 1, 'L');
@@ -273,7 +275,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // $pdf->Cell(0,0,'',0,1);
 
 
-    createTableTitle($pdf,$customer_name,$date,$order_number,$taxpayer_identification_number,$quotation_number,$telephone_number,$make_payment);
+    createTableTitle($pdf,$customer_name,$date,$address,$order_number,$taxpayer_identification_number,$quotation_number,$telephone_number,$make_payment);
     createTableProduct($pdf, $products);
     createTablePrice($pdf, $subtotal, $vat, $grand_total);
 
@@ -283,7 +285,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         $payment_cash = false;
     }
-    if (isset($_POST['check']) && $_POST['check'] === 'true') {
+    if (isset($_POST['payment_check']) && $_POST['payment_check'] === 'true') {
         $payment_check = true;
     } else {
         $payment_check = false;
@@ -371,9 +373,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $pdf->Cell(55, 5, iconv('UTF-8', 'TIS-620//IGNORE', 'ผู้มีอำนาจนาม'), 0, 1, 'C');
 
 
-    // $pdf->setFillColor(230,230,230); 
-    // $pdf->Cell(0,10,'hello',0,1,'L',1); //your cell
-
     if (!file_exists('purchase_order')) {
         mkdir('purchase_order', 0755, true);
     }
@@ -384,7 +383,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     try {
         $bank = $_POST['bank'] ?? ' (ไม่ได้ระบุ)';
-        if ($_POST['payment_cash'] === 'true' && $_POST['check'] === 'true') {
+        if ($_POST['payment_cash'] === 'true' && $_POST['payment_check'] === 'true') {
 
             $payment = 'การชำระเงินผ่านเงินสด';
 
@@ -392,7 +391,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             $payment = 'การชำระเงินผ่านเงินสด ';
 
-        } else if ($_POST['check'] === 'true') {
+        } else if ($_POST['payment_check'] === 'true') {
 
             $payment = 'เช็คธนาคาร' . $bank;
 
@@ -410,6 +409,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             customer_name,
             taxpayer_identification_number, 
             telephone_number,
+            address,
             volume,
             receipt_number,
             order_number,
@@ -419,16 +419,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             vat, 
             grand_total, 
             payment,
+            payment_cash,
+            payment_check,
             bank,
             branch,
             check_number,
-            check_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)') ;
+            check_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)') ;
         
         $stmt->execute([
             $date, 
             $customer_name,  
             $taxpayer_identification_number, 
             $telephone_number,
+            $address,
             $volume,
             $receipt_number,
             $order_number,
@@ -437,7 +440,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $subtotal, 
             $vat, 
             $grand_total, 
-            $payment, 
+            $payment,
+            $payment_cash, 
+            $payment_check,
             $bank,
             $branch,
             $check_number,

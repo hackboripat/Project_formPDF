@@ -29,15 +29,19 @@
                     <div class="form1">
                      <table>
                         <tr>
-                            <td width="80px"><label for="fname">ชื่อลูกค้า</label></td>
+                            <td width="80px"><label for="customer_name">ชื่อลูกค้า</label></td>
                             <td><input type="text" id="customer_name" name="customer_name" required></td>
                         </tr>
                         <tr>
-                            <td><label for="fname">เลขที่ประจำตัวผู้เสียภาษี</label></td>
+                            <td><label for="address">ที่อยู่</label></td>
+                            <td><input type="text" id="address" name="address" required></td>
+                        </tr>
+                        <tr>
+                            <td><label for="taxpayer_identification_number">เลขที่ประจำตัวผู้เสียภาษี</label></td>
                             <td><input type="text" id="taxpayer_identification_number" name="taxpayer_identification_number" required></td>
                         </tr>
                         <tr>
-                            <td><label for="fname">เบอร์โทรศัพท์</label></td>
+                            <td><label for="telephone_number">เบอร์โทรศัพท์</label></td>
                             <td><input type="text" id="telephone_number" name="telephone_number" required></td>
                         </tr>
                      </table>
@@ -62,27 +66,27 @@
 
                         <table>
                             <tr>
-                                <td><label for="fname">เล่มที่</label></td>
+                                <td><label for="volume">เล่มที่</label></td>
                                 <td><input type="text" id="volume" name="volume" required></td>
                             </tr>
                             <tr>
-                                <td><label for="fname">เลขที่</label></td>
+                                <td><label for="receipt_number">เลขที่</label></td>
                                 <td><input type="text" id="receipt_number" name="receipt_number" required></td>
                             </tr>
                             <tr>
-                                <td><label for="fname">วันที่</label></td>
+                                <td><label for="date">วันที่</label></td>
                                 <td><input type="date" id="date" name="date" required></td>
                             </tr>
                             <tr>
-                                <td><label for="fname">เลขที่ใบสั่งซื้อ</label></td>
+                                <td><label for="order_number">เลขที่ใบสั่งซื้อ</label></td>
                                 <td><input type="text" id="order_number" name="order_number" required></td>
                             </tr>
                             <tr>
-                                <td><label for="fname">เลขที่ใบเสนอราคา</label></td>
+                                <td><label for="quotation_number">เลขที่ใบเสนอราคา</label></td>
                                 <td><input type="text" id="quotation_number" name="quotation_number" required></td>
                             </tr>
                             <tr>
-                                <td><label for="fname">ชำระเงิน</label></td>
+                                <td><label for="make_payment">ชำระเงิน</label></td>
                                 <td><input type="text" id="make_payment" name="make_payment" required></td>
                             </tr>
                      </table>
@@ -99,8 +103,8 @@
                                 <td><label for="payment_cash"> การชำระเงินผ่านเงินสด</label></td>
                             </tr>
                             <tr>
-                                <td><input type="checkbox" id="check" name="check" value="true"></td>
-                                <td><label for="check"> เช็ค</label></td>
+                                <td><input type="checkbox" id="payment_check" name="payment_check" value="true"></td>
+                                <td><label for="payment_check"> เช็ค</label></td>
                             </tr>
 
                             <tr>
@@ -157,15 +161,15 @@
             <div class="summary">
                 <table>
                     <tr>
-                        <td><label for="fname">ยอดเงินรวม</label ></td>
+                        <td><label for="subtotal">ยอดเงินรวม</label ></td>
                         <td><input type="number" id="subtotal" name="subtotal" readonly></td>
                     </tr>
                     <tr>
-                        <td><label for="fname">ภาษีมูลค่าเพิ่ม</label></td>
+                        <td><label for="vat">ภาษีมูลค่าเพิ่ม</label></td>
                         <td><input type="number" id="vat" name="vat" readonly></td>
                     </tr>
                     <tr>
-                        <td><label for="fname">ราคารวมทั้งสิ้น</label></td>
+                        <td><label for="grand_total">ราคารวมทั้งสิ้น</label></td>
                         <td><input type="number" id="grand_total" name="grand_total"  readonly></td>
                     </tr>
                 </table>
