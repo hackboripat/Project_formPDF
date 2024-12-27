@@ -78,11 +78,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $telephone_number = $_POST['telephone_number'];
     $address = $_POST['address'];
 
-
     
     $volume = $_POST['volume'];
     $receipt_number = $_POST['receipt_number'];
-    $date = $_POST['date'];
+
+    // $date = $_POST['date'];
+    $date = new DateTimeImmutable($_POST['date']);
+    $date = $date->format('d/m/Y');
+
     $order_number = $_POST['order_number'];
     $quotation_number = $_POST['quotation_number'];
     $make_payment = $_POST['make_payment'];
@@ -95,6 +98,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $branch = $_POST['branch'];
     $check_number = $_POST['check_number'];
     $check_date = $_POST['check_date'];
+
+    $check_date = new DateTimeImmutable($_POST['check_date']);
+    $check_date = $check_date->format('d/m/Y');
     
 
     // $branch = $_POST['branch'];
@@ -264,8 +270,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $pdf->Cell(0,8 , iconv('UTF-8', 'TIS-620//IGNORE', 'บริษัท ฟิตติ้ง เคเบิ้ล (ประเทศไทย) จำกัด'), 0,1 ,'R');
     $pdf->SetFont('THSarabunNew', '', 12);
     $pdf->Cell(0,5 , iconv('UTF-8', 'TIS-620//IGNORE', '75/148 ซอยร่มเกล้า 1 แขวงแสนแสบ'), 0,1 ,'R');
-    $pdf->Cell(0,5 , iconv('UTF-8', 'TIS-620//IGNORE', 'เขตมีนบุรี กรุงเทพมหานคร 5510 โทร 082-681-6691'), 0,1 ,'R');
-    $pdf->Cell(0,5 , iconv('UTF-8', 'TIS-620//IGNORE', 'เลขประจำตัวผู้เสียภาษี 010567237820'), 0,1 ,'R');
+    $pdf->Cell(0,5 , iconv('UTF-8', 'TIS-620//IGNORE', 'เขตมีนบุรี กรุงเทพมหานคร 10510 โทร 082-681-6691'), 0,1 ,'R');
+    $pdf->Cell(0,5 , iconv('UTF-8', 'TIS-620//IGNORE', 'เลขประจำตัวผู้เสียภาษี 0105567237820'), 0,1 ,'R');
 
     $pdf->SetFont('THSarabunNew', '', 12);
     $pdf->Text(150,33,iconv('UTF-8', 'TIS-620//IGNORE', 'เล่มที่ ' . $volume));
@@ -353,7 +359,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
 
-    $pdf->Cell(55, 2, iconv('UTF-8', 'TIS-620//IGNORE', ''), '', 1, 'C');
+    $pdf->Cell(55, 1, iconv('UTF-8', 'TIS-620//IGNORE', ''), '', 1, 'C');
 
     //ลายเช็น
     $pdf->SetFont('THSarabunNew', '', 14);
@@ -364,6 +370,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $pdf->Cell(55, 5, iconv('UTF-8', 'TIS-620//IGNORE', '...........................................................'), '', 0, 'C');
     $pdf->Cell(55, 5, iconv('UTF-8', 'TIS-620//IGNORE', '...........................................................'), '', 1, 'C');
 
+    
+    $pdf->Cell(55, 3, iconv('UTF-8', 'TIS-620//IGNORE', '(                                          )'), '', 0, 'C');
+    $pdf->Cell(55, 3, iconv('UTF-8', 'TIS-620//IGNORE', '(                                          )'), '', 0, 'C');
+    $pdf->Cell(55, 3, iconv('UTF-8', 'TIS-620//IGNORE', '(                                          )'), '', 0, 'C');
+    $pdf->Cell(55, 3, iconv('UTF-8', 'TIS-620//IGNORE', '(                                          )'), '', 1, 'C');
     $pdf->SetFont('THSarabunNew', '', 12);
     // $pdf->Cell(90, 5, iconv('UTF-8', 'TIS-620//IGNORE', ''), 0, 1, 'L');
     // $pdf->Cell(10, 5, iconv('UTF-8', 'TIS-620//IGNORE', ''), 0, 0, 'C');
@@ -383,7 +394,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     try {
         $bank = $_POST['bank'] ?? ' (ไม่ได้ระบุ)';
-        if ($_POST['payment_cash'] === 'true' && $_POST['payment_check'] === 'true') {
+        if (($_POST['payment_cash'] ?? 'false') === 'true' && ($_POST['payment_check'] ?? 'false') === 'true') {
 
             $payment = 'การชำระเงินผ่านเงินสด';
 
@@ -393,7 +404,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         } else if ($_POST['payment_check'] === 'true') {
 
-            $payment = 'เช็คธนาคาร' . $bank;
+            $payment = 'เช็ค';
 
         } else {
 

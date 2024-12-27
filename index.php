@@ -11,6 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 
 <body>
@@ -21,6 +22,7 @@
             <p>ใบส่งของ/ใบเสร็จรับเงิน/ใบกำกับภาษี</p>
         </div>
         <form action="pdf.php" method="post" id="product-form" target="_blank">
+
             <div class="row">
 
                 <div class="col">
@@ -75,7 +77,8 @@
                             </tr>
                             <tr>
                                 <td><label for="date">วันที่</label></td>
-                                <td><input type="date" id="date" name="date" required></td>
+                                <td><input type="date" class="" id="date" name="date"  onkeydown="return false" required></td>
+                                <span id="datePickerLbl" style="pointer-events: none;"></span>
                             </tr>
                             <tr>
                                 <td><label for="order_number">เลขที่ใบสั่งซื้อ</label></td>
@@ -201,9 +204,10 @@
 
     <script>
 
+
         var today = new Date();
-        document.getElementById("date").value = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
-        document.getElementById("check_date").value = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
+        document.getElementById("date").value = (today.getFullYear()+ 543) + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
+        document.getElementById("check_date").value = (today.getFullYear()+ 543) + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
 
             
             // }
@@ -306,8 +310,8 @@
                 });
 
                 var today_ = new Date();
-                document.getElementById("date").value = today_.getFullYear() + '-' + ('0' + (today_.getMonth() + 1)).slice(-2) + '-' + ('0' + today_.getDate()).slice(-2);
-                document.getElementById("check_date").value = today_.getFullYear() + '-' + ('0' + (today_.getMonth() + 1)).slice(-2) + '-' + ('0' + today_.getDate()).slice(-2);
+                document.getElementById("date").value = (today_.getFullYear()+ 543) + '-' + ('0' + (today_.getMonth() + 1)).slice(-2) + '-' + ('0' + today_.getDate()).slice(-2);
+                document.getElementById("check_date").value = (today_.getFullYear()+ 543) + '-' + ('0' + (today_.getMonth() + 1)).slice(-2) + '-' + ('0' + today_.getDate()).slice(-2);
             }
             
             clearButton.addEventListener("click", clearForm);
